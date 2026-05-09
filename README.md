@@ -1,4 +1,4 @@
-# Smartphone Pricing Optimization
+# 数学建模新生杯
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.9%2B-blue" />
