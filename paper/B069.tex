@@ -1,0 +1,1095 @@
+%! Mode:: "TeX:UTF-8"
+%! TEX program = xelatex
+\PassOptionsToPackage{quiet}{xeCJK}
+
+\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{tabular}{\songti\zihao{-4}}
+\usepackage[numbers,sort&compress]{natbib}  % 文献管理宏包
+\usepackage[framemethod=TikZ]{mdframed}  % 框架宏包
+\usepackage{url}  % 网页链接宏包
+\usepackage{subcaption}  % 子图宏包
+\usepackage{xeCJK} 
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{mathrsfs}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{changepage}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{graphicx}
+
+\newmdenv[
+  linecolor=gray!55,
+  linewidth=0.8pt,
+  roundcorner=4pt,
+  backgroundcolor=gray!6,
+  innertopmargin=0.6em,
+  innerbottommargin=0.6em,
+  innerleftmargin=0.8em,
+  innerrightmargin=0.8em
+]{highlightbox}
+
+
+%==================== 算法环境 ====================%
+\usepackage[ruled,linesnumbered]{algorithm2e}
+
+\renewcommand{\algorithmcfname}{Algorithm}
+\SetAlgoNlRelativeSize{-1}
+\SetAlFnt{\normalsize}
+\SetNlSty{}{}{:}
+\DontPrintSemicolon
+\IncMargin{1em}
+\SetAlgoInsideSkip{2pt}
+
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{end if}
+\SetKwFor{For}{for}{do}{end for}
+\SetKwFor{ForEach}{for each}{do}{end for}
+\SetKwFor{While}{while}{do}{end while}
+
+\definecolor{headerblue}{RGB}{210,220,245}
+\setlist{itemsep=0.2em, topsep=0.2em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%参考文献设置
+
+\makeatletter
+% 如果模板里用 \section*{\refname} 来做无编号标题，就把它去掉：
+\patchcmd{\thebibliography}
+  {\section*{\refname}}   % 查找这一句
+  {}                       % 替换为空
+  {}{}                     % 成功/失败都不报错
+% 如果模板里用 \chapter*{\bibname}（report/book 类）也同理：
+\patchcmd{\thebibliography}
+  {\chapter*{\bibname}}
+  {}
+  {}{}
+% 对于 natbib 可能单独调用了 \bibsection，也一并清空：
+\renewcommand{\bibsection}{}
+
+\makeatother
+%引用格式改进
+
+\makeatletter
+% 让 \cite{…} 只输出上标数字
+\renewcommand\@cite[2]{\textsuperscript{#1}}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  % …其他你想要的设置
+}
+% \documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页，电子版提交的时候使用。
+
+\usepackage{titlesec}
+\titleformat{\section}{\heiti\bfseries\zihao{4}\centering}{\thesection}{1em}{}
+\titleformat{\subsection}{\heiti\bfseries\zihao{-4}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\heiti\bfseries\zihao{-4}}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{0.5em}{0.3em}
+\titlespacing*{\subsection}{0pt}{0.3em}{0.2em}
+\titlespacing*{\subsubsection}{0pt}{0.2em}{0.2em}
+\AtBeginDocument{\songti\zihao{-4}}
+\makeatletter
+\patchcmd{\makeothertitle}
+  {{\centering \zihao{3}\bfseries \@title\par}}
+  {{\centering \zihao{3}\heiti\bfseries \@title\par}}
+  {}{}
+\patchcmd{\makeothertitle}
+  {{\centering \zihao{3}\bfseries \@title\par}}
+  {{\centering \zihao{3}\heiti\bfseries \@title\par}}
+  {}{}
+\makeatother
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\renewcommand{\abstractname}{\heiti\bfseries\zihao{4}摘要}
+
+\title{融合用户评价与市场响应的智能手机设计优化及定价模型研究}  % 论文标题
+
+\tihao{B}  % 题号
+\baominghao{B069}  % 报名号
+\schoolname{武汉理工大学}  % 学校
+\membera{周祥宇}  % 队员a
+\memberb{李自力}  % 队员b
+\memberc{陈家辉}  % 队员c
+\yearinput{2026}
+\monthinput{3}
+\dayinput{26}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%表格字体预设
+
+\AtBeginEnvironment{tabular}{\songti\zihao{-4}}
+% 如果你也用 longtable/tabularx，一并加上：
+\AtBeginEnvironment{longtable}{\songti\zihao{-4}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 正文
+\begin{document}
+
+\maketitle
+\begin{abstract}
+针对\heiti 智能手机产品设计优化与定价决策问题\songti，本文基于附件一中的\heiti 用户多维评价数据\songti 和附件二中的\heiti 市场模拟销售数据\songti，构建了“\heiti 设计维度识别—市场需求响应—参数定价联合优化\songti”的一体化建模框架，实现由\heiti 用户感知\songti 到\heiti 企业利润\songti 的闭环分析。
+
+对于问题一，以\heiti 总体评分\songti 为响应变量、\heiti 六个设计维度满意度\songti 为解释变量，建立\heiti 多元线性回归、标准化回归、岭回归与随机森林组合模型\songti，对各维度影响程度进行交叉验证。结果表明，六个维度均对总体评分具有\heiti 显著正向影响\songti，模型拟合优度较高，$R^2=0.9589$；其中\heiti 性能\songti 与\heiti 摄像\songti 在多种方法下均稳定处于重要性排序前列，是影响用户总体评价的\heiti 核心设计维度\songti。
+
+对于问题二，建立\heiti 中心化对数线性需求模型\songti，并结合\heiti 稳健标准误、VIF诊断及岭回归检验\songti，量化价格、竞品价格、产品综合评分和市场容量对销量的影响。结果表明，本机价格对销量呈\heiti 负向影响\songti，竞品价格呈\heiti 正向替代效应\songti，而\heiti 产品综合评分\songti 与\heiti 市场容量\songti 对销量的促进作用更为显著。情景仿真显示，降价5\%虽可使销量提升3.18\%，却会导致利润下降17.46\%；相比之下，\heiti 双版本分层策略\songti 可使销量提升14.75\%，利润提升12.08\%，说明\heiti 产品分层优于单纯降价\songti。与此同时，在当前考察区间内，单产品利润对应的\heiti 最优价格\songti 约为5835元。
+
+对于问题三，选取\heiti 电池容量、主摄像素、处理器性能指数和屏幕刷新率\songti 作为设计变量，构建\heiti 设计参数—满意度—评分—销量—利润\songti 的联合优化模型，并采用\heiti 离散枚举法\songti 求解。结果表明，在当前约束条件和搜索区间内，最优方案为：5500mAh电池、50MP主摄、处理器性能指数85、120Hz刷新率，对应最优定价为6199元。与基准方案相比，该方案\heiti 用户总体评分（1--5星）提升4.53\%\songti，\heiti 单位成本提升2.76\%\songti，\heiti 总利润提升118.19\%\songti。进一步分析表明，\heiti 利润最大化方案并非全面提升全部硬件参数，而是优先优化用户感知强、成本收益比更高的关键配置\songti。
+
+研究表明，\heiti 相比单纯价格竞争，围绕核心体验维度进行产品力优化更能提升企业利润；相比全面堆料，关键配置的针对性优化更具成本收益优势\songti。
+
+\begin{highlightbox}
+{\heiti 本文的主要创新与贡献：}
+
+1）构建了贯通\heiti 设计参数、用户评价、市场销量与企业利润\songti 的闭环建模框架，实现了产品设计与定价决策的一体化分析；
+
+2）融合\heiti 多元回归、岭回归、随机森林及稳健性检验\songti 等方法，对关键维度识别和需求估计结果进行交叉验证，增强了模型结论的稳健性与可信度；
+
+3）揭示了\heiti 产品力优化优先于单纯价格竞争、关键配置优化优于全面堆料\songti 的策略规律，为企业开展差异化设计与定价协同决策提供了量化依据。
+\end{highlightbox}
+
+{\heiti 关键词：}多元线性回归；岭回归；随机森林；对数线性需求模型；利润最大化
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% 这一行是编译目录的
+
+\tableofcontents % 目录 这个代码就是编译目录的，想要就直接取消注释就可以了
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\section{问题重述}
+\subsection{问题背景}
+
+随着智能手机市场竞争不断加剧，产品设计、性能体验与定价策略已成为影响消费者购买决策和企业市场表现的关键因素。除处理器性能等传统指标外，外观、屏幕、摄像、续航及发热控制等多维体验也日益受到用户关注。如何在提升用户满意度的同时制定合理价格，并进一步实现销量与利润增长，成为手机厂商亟需解决的问题。
+
+电商平台、社交媒体及专业测评中积累的大量用户反馈，能够较真实地反映消费者对产品各设计维度的评价；市场销售数据则揭示了价格、竞品与销量之间的响应关系。基于这两类数据建立数学模型，不仅能够识别影响总体评价的关键因素，还能够为产品设计优化与定价决策提供量化依据。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{figures/tu01.png}
+  \caption{智能手机设计、定价与市场表现关系示意图}
+  \label{fig:background_relation}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\subsection{问题要求}
+
+{\heiti 问题1：用户满意度分析问题}
+
+根据附件一中的多维度用户评价数据，建立手机各设计维度满意度与总体评分之间的数量关系模型，量化各设计因素对总体评分的影响程度，并识别影响用户总体评价的关键设计维度。
+
+{\heiti 问题2：定价与销量关系建模问题}
+
+根据附件二中的价格、竞品价格、产品综合评分及销量数据，构建定价—销量关系模型，分析用户对价格的敏感性，并在此基础上评估降价策略与产品分级策略对销量和利润的影响。
+
+{\heiti 问题3：产品设计与利润优化问题}
+
+综合用户评价数据与市场销量数据，选取关键设计参数，建立设计参数、用户满意度、产品成本与市场销量之间的关联模型，并以利润最大化为目标，求解最优设计参数组合及对应定价方案。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\subsection{我们的工作}
+针对上述问题，我们的工作主要包括以下几个方面：
+
+{\heiti 1.构建用户满意度影响模型：}
+
+对附件一数据进行预处理与特征提取，采用多元回归分析，建立各设计维度与总体评分之间的映射关系，计算各指标的权重，识别影响用户评价的关键因素。
+
+{\heiti 2.构建价格—销量响应模型：}
+
+基于附件二数据，构建需求函数（如线性回归模型、对数模型或弹性模型），刻画价格、竞品价格及产品评分对销量的影响机制，并引入价格弹性系数衡量用户对价格变化的敏感程度。同时对不同定价策略进行仿真分析。
+
+{\heiti 3.设计参数优化与利润最大化模型：}
+
+将设计参数、用户满意度与生产成本进行关联建模，构建以利润最大化为目标的优化模型。通过合理假设函数关系并采用优化算法（如梯度法或枚举搜索），求解最优设计参数组合与对应定价方案，并对改进效果进行评估。
+
+\begin{figure}[htbp] %调整图片位置
+    \centering
+    \includegraphics[width = 0.9\textwidth]{figures/流程图.png}%页面百分比
+    \caption{智能手机设计优化与定价问题总体建模框架图}% 标题
+    \label{}%标签，用于引用
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\section{模型假设}
+
+为突出问题的主要矛盾并降低实际系统的复杂性，本文在不偏离题意的前提下，对研究对象作如下基本假设：
+
+\begin{itemize}
+    \item {\heiti 假设1：数据有效。}附件一与附件二中的样本数据真实可靠、记录完整，能够较好反映用户评价特征及市场销售规律。
+
+    \item {\heiti 假设2：总体评分由核心维度主导。}用户总体评分主要受外观、屏幕、摄像、续航、性能和发热控制六个设计维度影响，其他因素对总体评分的影响在本文中忽略不计。
+
+    \item {\heiti 假设3：影响关系相对稳定。}在样本考察区间内，各设计维度对总体评分的作用方向与作用强度保持相对稳定，可通过回归模型进行量化描述。
+
+    \item {\heiti 假设4：销量由主要市场变量决定。}产品销量主要受本机价格、竞品价格、产品综合评分及市场容量影响，短期内广告投放、渠道波动和随机冲击等因素不作重点考虑。
+
+    \item {\heiti 假设5：市场竞争环境短期稳定。}研究期间市场需求总体平稳，消费者对价格变化具有可量化的敏感性，且竞品与本产品之间存在替代效应。
+
+    \item {\heiti 假设6：设计参数可函数化表征。}关键设计参数对用户满意度和单位成本的影响具有一定规律性，可用连续函数或分段函数进行近似刻画。
+
+    \item {\heiti 假设7：企业以利润最大化为目标。}在满足基本技术条件与市场供给能力的前提下，企业能够调整产品设计参数与销售价格，并以总利润最大化作为优化目标。
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\section{符号说明}
+
+\renewcommand{\arraystretch}{1.15}
+\rowcolors{2}{gray!10}{white}
+
+\begin{longtable}{%
+>{\centering\arraybackslash}m{2.3cm}
+>{\raggedright\arraybackslash}p{9.2cm}
+>{\centering\arraybackslash}m{2.2cm}}
+\caption{主要符号说明}\label{tab:symbols}\\
+\toprule
+\rowcolor{headerblue}
+\textbf{符号} & \textbf{含义} & \textbf{单位} \\
+\midrule
+\endfirsthead
+
+\toprule
+\rowcolor{headerblue}
+\textbf{符号} & \textbf{含义} & \textbf{单位} \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
+$Q$ & 手机销量 & 万台 \\
+$p$ & 本机价格 & 元 \\
+$p_c$ & 竞品价格 & 元 \\
+$s$ & 产品综合评分 & 分 \\
+$m$ & 市场容量 & 万台 \\
+$c$ & 单位成本 & 元 \\
+$\Pi$ & 总利润 & 万元 \\
+$\varepsilon$ & 随机误差项 & 无量纲 \\
+
+$z_i\,(i=1,2,3,4)$ & 问题二中中心化后的对数解释变量，分别对应本机价格、竞品价格、产品综合评分和市场容量 & 无量纲 \\
+$\beta_i\,(i=0,1,\dots,4)$ & 问题二对数销量模型回归系数 & 无量纲 \\
+
+$p_0$ & 原单版本基准价格 & 元 \\
+$Q_0$ & 原单版本基准销量 & 万台 \\
+$p^{(1)}$ & 降价 $5\%$ 后的产品价格 & 元 \\
+$Q_b^\ast,\ Q_p^\ast$ & 基础版与 Pro 版的潜在销量 & 万台 \\
+$Q^{(2)}$ & 双版本策略下总销量 & 万台 \\
+$Q_b,\ Q_p$ & 基础版与 Pro 版实际销量 & 万台 \\
+$p_b,\ s_b,\ c_b$ & 基础版价格、综合评分与单位成本 & 元/分/元 \\
+$p_p,\ s_p,\ c_p$ & Pro 版价格、综合评分与单位成本 & 元/分/元 \\
+$\eta$ & 双版本策略保守修正系数 & 无量纲 \\
+$\lambda$ & 市场扩张上限系数 & 无量纲 \\
+
+$x_i\,(i=1,2,3,4)$ & 问题三设计变量，分别表示电池容量、主摄像素、处理器性能指数和屏幕刷新率 & 无量纲  \\
+$y_i\,(i=1,2,\dots,6)$ & 六个维度满意度，分别表示外观、屏幕、摄像、续航、性能和发热控制满意度 & 无量纲 \\
+$R$ & 用户总体评分（1--5星） & 星 \\
+$S$ & 产品综合得分 & 分 \\
+$R_0$ & 当前产品基准总体评分（1--5星） & 星 \\
+$S_0$ & 当前产品基准综合得分 & 分 \\
+$C$ & 优化后单位成本 & 元 \\
+$C_0$ & 基准单位成本 & 元 \\
+
+$\alpha_i\,(i=0,1,\dots,6)$ & 问题一总体评分模型回归系数 & 无量纲 \\
+$f_i(\cdot)$ & 设计变量到各维度满意度的映射函数 & 无量纲 \\
+$g_i(\cdot)$ & 设计变量到增量成本的映射函数 & 元 \\
+$k$ & 总体评分到产品综合得分的线性映射系数 & 无量纲 \\
+
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\section{数据处理与分析}
+
+为保证后续建模的有效性，本文首先对附件1和附件2进行预处理与探索性分析。经核查，两份数据字段完整、变量含义清晰，主要指标取值范围与题意一致，能够满足建模要求。考虑到题目关注重点在于变量之间的影响关系，而非单变量分布特征，因此本节主要从相关性、共线性及建模适配性三个方面展开分析。
+
+\subsection{附件1用户评价数据分析}
+
+附件1以总体评分为响应变量，以外观、屏幕、摄像、续航、性能和发热控制六个设计维度为解释变量。经核查，附件1共包含500条有效样本，未发现重复值、缺失值及超出业务阈值的异常值，可直接用于后续建模。各设计维度统计特征与共线性诊断结果见表~\ref{tab:review_stats_vif}。
+
+\begin{table}[!htbp]
+\centering
+\caption{附件1各设计维度统计特征与共线性诊断}
+\label{tab:review_stats_vif}
+\renewcommand{\arraystretch}{1.18}
+\rowcolors{2}{gray!12}{white}
+\begin{tabularx}{\textwidth}{
+>{\centering\arraybackslash}m{2.2cm}
+>{\centering\arraybackslash}m{3.2cm}
+>{\centering\arraybackslash}m{3.4cm}
+>{\centering\arraybackslash}X
+}
+\toprule
+\rowcolor{headerblue}
+\textbf{维度} & \textbf{满意度均值} & \textbf{与总体评分相关性} & \textbf{VIF} \\
+\midrule
+外观     & 0.368 & 0.884 & 6.100 \\
+屏幕     & 0.394 & 0.881 & 6.270 \\
+摄像     & 0.177 & 0.879 & 4.181 \\
+续航     & 0.469 & 0.881 & 5.881 \\
+性能     & 0.301 & 0.886 & 6.140 \\
+发热控制 & 0.178 & 0.875 & 4.264 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+由表~\ref{tab:review_stats_vif}可知：六个设计维度满意度均值均为正，说明样本整体评价偏正向，其中续航均值最高，摄像与发热控制相对较低；六个维度与总体评分的 Spearman 相关系数均在 $0.875\sim0.886$ 之间，呈高度正相关，其中性能相关性最高，表明其与总体评价最为接近\cite{spearman1904}。此外，各变量的 VIF 介于 $4.181\sim6.270$ 之间，说明解释变量之间存在中等程度的多重共线性\cite{obrien2007}。
+
+因此，问题一不能仅依据相关系数或均值判断变量重要性，而应进一步建立回归模型，并结合稳健性方法识别关键设计维度。
+
+\subsection{附件2产品市场数据分析}
+
+附件2包含产品定价、竞争对手定价、产品综合评分、市场容量和模拟销量等变量，用于刻画销量形成机制。经处理，原始32条记录中剔除1条重复样本，并对少量缺失值采用中位数补齐，最终保留31条有效样本。样本中产品定价主要分布在3999--4799元之间，产品综合评分集中在78--95分之间，模拟销量介于4.8--28.7万台之间，具有较好的区分度。
+
+相关性分析表明：销量与市场容量的 Spearman 相关系数最高，为0.940；与产品综合评分的相关系数为0.893；与产品定价的相关系数为$-0.376$；相对竞品价差与销量的相关系数为0.191\cite{spearman1904}。这说明市场容量和产品力对销量的解释能力更强，而价格对销量具有负向影响，但单变量解释力度相对有限。
+
+图~\ref{fig:q2_price_sales}和图~\ref{fig:q2_score_sales}分别展示了产品定价、产品综合评分与销量之间的关系。由图可见，产品定价与销量总体呈负向变化趋势，而产品综合评分与销量呈明显正向关系，说明销量形成并非由单一因素决定，而是价格、产品力与市场环境共同作用的结果。
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{analysis_outputs/附件2_产品定价与销量关系图.png}
+        \caption{产品定价与模拟销量关系图}
+        \label{fig:q2_price_sales}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{analysis_outputs/附件2_产品评分与销量关系图.png}
+        \caption{产品综合评分与模拟销量关系图}
+        \label{fig:q2_score_sales}
+    \end{subfigure}
+    \caption{附件2关键变量与销量关系分析}
+    \label{fig:q2_key_sales}
+\end{figure}
+\FloatBarrier
+
+进一步的 VIF 诊断表明，附件2解释变量之间也存在较明显相关性，若仅依据单变量图形或相关系数进行判断，结论可能产生偏差\cite{obrien2007}。因此，后续问题二需采用多元回归模型，对价格、竞品价格、产品综合评分和市场容量进行联合刻画。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{问题一模型建立与求解}
+
+\subsection{问题分析}
+
+附件一量化给出了手机外观、屏幕、摄像、续航、性能和发热控制六个设计维度的满意度，其中各维度取值范围为$[-1,1]$，总体评分取值范围为$[1,5]$。题目要求基于这些数据，分析各设计维度满意度与总体评分之间的数量关系，量化其影响程度，并识别对用户总体评价起关键作用的核心维度。
+
+该问题本质上属于多因素影响分析与关键变量识别问题。总体评分可视为响应变量，六个设计维度满意度可视为解释变量。由于各变量均为连续型指标，且研究目标不仅是判断影响是否存在，更强调影响程度的量化及变量重要性的比较，因此采用回归分析框架较为合适。
+
+对附件一数据进行预分析可知：样本数据完整，无缺失值和异常值，可直接用于建模；六个设计维度与总体评分均呈显著正相关，说明各维度均对总体评价具有正向促进作用；同时，各解释变量之间存在一定相关性，反映出模型中存在中等程度的多重共线性。若仅依据相关系数或普通回归系数判断变量重要性，可能导致结论失真。
+
+基于此，本文采用{\heiti “多元线性回归、标准化回归、岭回归与随机森林特征重要性”}相结合的组合建模思路，从线性解释、相对贡献比较、共线性修正和非线性验证四个层面，对各设计维度的作用进行综合识别，以提高结论的可靠性与稳健性。
+
+因此，问题一的关键在于：在多维因素共同作用且变量相关性较强的背景下，准确识别真正主导用户总体评分的核心设计维度，并为后续产品优化提供定量依据。
+
+\begin{figure}[htbp] %调整图片位置
+  \centering
+  \includegraphics[width = 0.95\textwidth]{figures/question1.png}%页面百分比
+  \caption{问题一模型结构示意图}% 标题
+  \label{fig:q1_model_structure}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{模型建立}
+
+\subsubsection{多元线性回归模型}
+
+设用户总体评分为 $R$，外观、屏幕、摄像、续航、性能、发热控制六个设计维度满意度分别为 $y_1, y_2, \cdots, y_6$，建立如下多元线性回归模型：
+\begin{equation}
+R = \alpha_0 + \alpha_1 y_1 + \alpha_2 y_2 + \alpha_3 y_3 + \alpha_4 y_4 + \alpha_5 y_5 + \alpha_6 y_6 + \varepsilon
+\end{equation}
+
+其中，$\alpha_0$ 为常数项，$\alpha_i$ 表示第 $i$ 个设计维度对总体评分的边际影响系数，$\varepsilon$ 为随机误差项。
+
+模型参数采用最小二乘法进行估计，其目标函数为\cite{montgomery2012}：
+\begin{equation}
+\min_{\alpha_0,\alpha_1,\cdots,\alpha_6} \sum_{k=1}^{n} \left( R_k - \alpha_0 - \sum_{j=1}^{6} \alpha_j y_{kj} \right)^2
+\end{equation}
+
+该模型可用于刻画在其他变量保持不变时，各设计维度满意度对总体评分的平均边际影响。
+
+\subsubsection{标准化回归模型}  
+
+由于原始回归系数受到变量量纲及波动范围的影响，直接比较其大小存在局限性。为客观衡量各维度的重要性，对变量进行标准化处理，构建标准化回归模型\cite{hastie2009}：
+\begin{equation}
+z_R = \tilde{\alpha}_1 z_{y_1} + \tilde{\alpha}_2 z_{y_2} + \tilde{\alpha}_3 z_{y_3} + \tilde{\alpha}_4 z_{y_4} + \tilde{\alpha}_5 z_{y_5} + \tilde{\alpha}_6 z_{y_6} + \varepsilon
+\end{equation}
+
+其中，
+\begin{equation}
+z_R = \frac{R - \bar{R}}{s_R}, \quad
+z_{y_j} = \frac{y_j - \bar{y}_j}{s_{y_j}}, \quad j = 1,2,\cdots,6
+\end{equation}
+
+$\tilde{\alpha}_j$ 为标准化回归系数，其绝对值越大，说明对应维度对总体评分的相对影响越显著。
+
+\subsubsection{岭回归模型}
+
+考虑到六个设计维度之间存在一定相关性，为避免多重共线性对模型稳定性造成影响，引入岭回归模型\cite{hoerl1970,lihang2019}：
+\begin{equation}
+\min_{\alpha_0,\alpha_1,\cdots,\alpha_6} 
+\sum_{k=1}^{n} \left( R_k - \alpha_0 - \sum_{j=1}^{6} \alpha_j y_{kj} \right)^2 
++ \lambda \sum_{j=1}^{6} \alpha_j^2
+\end{equation}
+
+其中，$\lambda$ 为正则化参数。岭回归通过引入 $L_2$ 正则项对回归系数进行收缩，从而提高模型在存在共线性条件下的稳定性。若岭回归得到的变量重要性排序与标准化回归结果基本一致，则说明模型结论具有较强稳健性。
+
+\subsubsection{随机森林特征重要性模型}
+
+为避免仅从线性模型角度得出结论，进一步构建随机森林回归模型，从非线性视角衡量各设计维度对总体评分的贡献\cite{breiman2001}。设第 $j$ 个变量的重要性得分为 $Imp_j$，其值根据特征对模型预测性能提升的贡献计算得到。
+
+$Imp_j$ 越大，说明对应设计维度对总体评分的解释能力越强。
+
+\subsubsection{模型评价指标}
+
+为评价模型的拟合效果与结论稳健性，本文选取决定系数 $R^2$、调整后决定系数 $\mathrm{Adj}\,R^2$ 和均方根误差（RMSE）衡量模型解释能力与预测误差；通过回归系数显著性检验判断各设计维度影响是否显著；并结合多模型结果一致性检验关键维度识别结果的稳健性。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{模型求解}
+
+基于附件1中的500条用户评价数据，本文采用最小二乘法估计多元线性回归模型参数，并结合标准化回归、岭回归与随机森林方法对变量重要性进行交叉验证。问题一模型求解的核心结果如表~\ref{tab:q1_core_result} 所示。
+
+\begin{table}[!htbp]
+\centering
+\caption{问题一模型求解的核心结果}
+\label{tab:q1_core_result}
+\renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{gray!12}{white}
+\begin{tabularx}{0.95\textwidth}{>{\raggedright\arraybackslash}m{2.8cm} X >{\centering\arraybackslash}m{2.2cm}}
+\toprule
+\rowcolor{headerblue}
+\textbf{指标} & \textbf{结果} & \textbf{说明} \\
+\midrule
+模型拟合效果 & $R^2=0.9589$，$\bar{R}^2=0.9584$，$RMSE=0.2420$ & 模型解释力强 \\
+原始回归系数特征 & 性能$(0.3869)$、续航$(0.3787)$、摄像$(0.3681)$影响较强；发热控制$(0.2854)$相对较小 & 均为正向影响 \\
+标准化回归排序 & 性能 $>$ 摄像 $>$ 外观 $>$ 屏幕 $>$ 续航 $>$ 发热控制 & 比较相对贡献 \\
+岭回归排序 & 性能 $>$ 摄像 $>$ 外观 $>$ 屏幕 $>$ 续航 $>$ 发热控制 & 结果稳定 \\
+随机森林排序 & 摄像 $>$ 性能 $>$ 续航 $>$ 发热控制 $>$ 屏幕 $>$ 外观 & 非线性验证 \\
+综合结论 & 性能与摄像是核心维度，外观、屏幕、续航为重要支撑维度，发热控制属于底线保障维度 & 优化方向明确 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+结果表明，模型拟合效果较好，$R^2=0.9589$，$\bar{R}^2=0.9584$，$RMSE=0.2420$，说明六个设计维度能够较好解释总体评分的变化。各解释变量回归系数均为正，且均满足 $p<0.001$，表明六个维度均对总体评分具有显著正向影响。
+
+从结果排序看，性能与摄像在标准化回归、岭回归和随机森林中始终位于前列，是影响总体评分的核心维度；外观、屏幕和续航构成重要支撑维度；发热控制影响相对较弱，更体现为基础保障作用。
+
+\subsection{结果分析}
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth,height=0.28\textheight,keepaspectratio]{figures/问题1_标准化回归系数柱状图.png}
+        \caption{标准化回归系数柱状图}
+        \label{fig:q1_stdcoef_new}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth,height=0.28\textheight,keepaspectratio]{figures/问题1_随机森林特征重要性柱状图.png}
+        \caption{随机森林特征重要性柱状图}
+        \label{fig:q1_rf_new}
+    \end{subfigure}
+    \caption{问题一变量重要性比较}
+    \label{fig:q1_importance_all}
+\end{figure}
+\FloatBarrier
+
+由图~\ref{fig:q1_importance_all} 可知，不同方法在个别维度排序上虽存在差异，但性能与摄像始终位于前列，说明关键维度识别结果具有较好稳健性；发热控制整体靠后，更偏向基础保障型指标。
+
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width = 0.6\textwidth]{figures/问题1_相关系数热力图.png}
+    \caption{问题一变量相关系数热力图} 
+    \label{fig:q1_corr_new}
+\end{figure}
+\FloatBarrier
+
+由图~\ref{fig:q1_corr_new} 可知，六个设计维度与总体评分均呈高度正相关，相关系数介于 $0.892\sim0.910$ 之间，其中性能相关性最高。同时，各解释变量之间也存在较强相关性，因此引入岭回归进行稳健性检验是必要的。
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{figures/问题1_真实值与预测值对比图.png}
+        \caption{真实值与预测值对比图}
+        \label{fig:q1_pred_new}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{figures/问题1_残差分布图.png}
+        \caption{残差分布图}
+        \label{fig:q1_residual_new}
+    \end{subfigure}
+    \caption{问题一模型诊断结果}
+    \label{fig:q1_diag_all}
+\end{figure}
+\FloatBarrier
+
+由图~\ref{fig:q1_diag_all} 可见，样本点大多分布在理想拟合线附近，残差均值接近于 $0$ 且整体较为对称，说明模型拟合精度较高、解释能力较强。
+
+综合来看，六个设计维度均显著影响总体评分，但作用层次存在差异：性能与摄像是核心因素，外观、屏幕和续航是重要支撑因素，发热控制则体现为底线约束因素。
+该结论为后续定价分析和产品设计优化提供了依据。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\section{问题二的模型建立与求解}
+
+\subsection{问题二分析}
+
+问题二要求依据附件二中的市场模拟数据，量化本机价格、竞品价格、产品综合评分及市场容量对销量的影响，并比较不同定价策略下销量与利润的变化。与问题一关注“用户评价形成机制”不同，问题二更关注“市场响应机制”，本质上属于需求建模与利润决策问题。
+
+附件二共包含 $31$ 条有效样本，变量包括本机价格、竞品价格、产品综合评分、市场容量和模拟销量。前期分析表明：本机价格与销量总体呈负向关系，竞品价格与销量存在替代效应，产品综合评分越高则销量越大。因此，销量并非由价格单一决定，而是价格因素、竞品替代效应、产品力水平和市场环境共同作用的结果。
+
+为同时满足“解释影响方向”和“量化价格敏感度”的要求，本文采用对数线性需求模型刻画销量响应关系\cite{wooldridge2020,varian2014}。该模型可将回归系数直接解释为弹性系数，具有较强经济含义；在销量预测模型基础上，再构建利润函数，对“降价 $5\%$”和“基础版+Pro版双版本”两类策略进行情景仿真。
+
+\subsection{模型建立}
+
+设手机销量为 $Q$（万台），本机价格为 $p$（元），竞品价格为 $p_c$（元），产品综合评分为 $s$，市场容量为 $m$，单位成本为 $c$（元）。为突出相对变化关系并便于解释价格弹性，建立如下对数线性需求模型：
+\begin{equation}
+\ln Q=\beta_0+\beta_1z_1+\beta_2z_2+\beta_3z_3+\beta_4z_4+\varepsilon,
+\label{eq:q2_demand}
+\end{equation}
+其中
+\begin{equation}
+z_1=\ln p-\overline{\ln p},\quad
+z_2=\ln p_c-\overline{\ln p_c},\quad
+z_3=\ln s-\overline{\ln s},\quad
+z_4=\ln m-\overline{\ln m}.
+\label{eq:q2_center}
+\end{equation}
+
+式中，$\beta_1,\beta_2,\beta_3,\beta_4$ 分别表示本机价格、竞品价格、产品综合评分和市场容量对销量的弹性影响。
+
+在销量预测模型基础上，进一步建立利润函数：
+\begin{equation}
+\Pi=(p-c)Q,
+\label{eq:q2_profit}
+\end{equation}
+其中销量以“万台”为单位，因此利润 $\Pi$ 的单位为“万元”。
+
+针对题目中的两类策略，分别建立如下情景模型。
+
+\textbf{（1）降价 $5\%$ 策略}：在保持产品综合评分、竞品价格、市场容量和单位成本不变的条件下，将价格调整为
+\begin{equation}
+p^{(1)}=0.95p_0,
+\label{eq:q2_strategy1}
+\end{equation}
+再代入式 \eqref{eq:q2_demand} 与式 \eqref{eq:q2_profit} 计算销量与利润。
+
+\textbf{（2）双版本策略}：设基础版和 Pro 版的价格、综合评分、单位成本分别为
+$(p_b,s_b,c_b)$ 与 $(p_p,s_p,c_p)$，则两版本在同一市场环境下的潜在销量分别为
+\begin{equation}
+Q_b^\ast=f(p_b,p_c,s_b,m),\qquad
+Q_p^\ast=f(p_p,p_c,s_p,m),
+\label{eq:q2_potential}
+\end{equation}
+其中 $f(\cdot)$ 为由式 \eqref{eq:q2_demand} 对应的销量预测函数。
+
+为避免双版本潜在销量简单相加导致收益高估，引入保守修正系数 $\eta=0.85$ 和市场扩张上限系数 $\lambda=1.35$，构造双版本总销量为
+\begin{equation}
+Q^{(2)}=\min\left\{\eta\left(Q_b^\ast+Q_p^\ast\right),\ \lambda Q_0\right\},
+\label{eq:q2_dual_total}
+\end{equation}
+其中 $Q_0$ 为原单版本基准销量。再按照潜在需求占比分配双版本销量：
+\begin{equation}
+Q_b=Q^{(2)}\frac{Q_b^\ast}{Q_b^\ast+Q_p^\ast},\qquad
+Q_p=Q^{(2)}\frac{Q_p^\ast}{Q_b^\ast+Q_p^\ast}.
+\label{eq:q2_dual_split}
+\end{equation}
+于是双版本总利润为
+\begin{equation}
+\Pi^{(2)}=(p_b-c_b)Q_b+(p_p-c_p)Q_p.
+\label{eq:q2_dual_profit}
+\end{equation}
+
+\subsection{模型求解}
+
+首先，对附件二中的价格、竞品价格、产品综合评分、市场容量和模拟销量进行对数化处理，并按式 \eqref{eq:q2_center} 对解释变量进行中心化。随后，采用带有 HC3 稳健标准误的最小二乘法对式 \eqref{eq:q2_demand} 进行参数估计\cite{mackinnon1985}，得到问题二的对数销量模型：
+\begin{equation}
+\ln Q
+=2.6955-0.6096z_1+0.3355z_2+3.8340z_3+2.1706z_4.
+\label{eq:q2_final_model}
+\end{equation}
+
+模型主要回归结果如表 \ref{tab:q2_regression} 所示。
+
+\begin{table}[!htbp]
+\centering
+\caption{问题二对数销量模型回归结果}
+\label{tab:q2_regression}
+\renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{gray!12}{white}
+\begin{tabular}{cccccc}
+\hline
+\rowcolor{headerblue}
+变量 & 回归系数 & 稳健标准误 & $p$值 & 95\%置信区间下限 & 95\%置信区间上限 \\
+\hline
+常数项   & 2.6955 & 0.0132 & 0.0000 & 2.6696 & 2.7214 \\
+本机价格 & -0.6096 & 0.6179 & 0.3239 & -1.8207 & 0.6015 \\
+竞品价格 & 0.3355 & 0.3223 & 0.2978 & -0.2962 & 0.9672 \\
+产品得分 & 3.8340 & 0.7706 & 0.0000 & 2.3236 & 5.3444 \\
+市场容量 & 2.1706 & 0.5474 & 0.0001 & 1.0977 & 3.2435 \\
+\hline
+\end{tabular}
+\end{table}
+
+模型拟合与诊断结果如表 \ref{tab:q2_diagnosis} 所示。结果表明，模型整体解释能力较强，残差未表现出明显异常，能够满足后续策略模拟的应用要求。
+
+\begin{table}[!htbp]
+\centering
+\caption{问题二模型拟合与诊断结果}
+\label{tab:q2_diagnosis}
+\renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{gray!12}{white}
+\begin{tabular}{ccc}
+\hline
+\rowcolor{headerblue}
+类别 & 指标 & 数值 \\
+\hline
+拟合效果 & 对数模型 $R^2$ & 0.9839 \\
+拟合效果 & 调整后 $R^2$ & 0.9813 \\
+拟合效果 & 原尺度预测 $R^2$ & 0.9662 \\
+拟合效果 & $RMSE$ & 1.2153 \\
+残差检验 & JB统计量 / $p$值 & 0.5002 / 0.7787 \\
+残差检验 & BP统计量 / $p$值 & 3.6276 / 0.4587 \\
+自相关检验 & Durbin--Watson & 1.4749 \\
+\hline
+\end{tabular}
+\end{table}
+
+图 \ref{fig:q2_model_visual} 进一步给出了变量作用方向与模型拟合效果的直观展示。
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/问题2_各因素对销量影响的回归系数_最终保守版.png}
+\caption{各因素对销量影响的回归系数}
+\label{fig:q2_coef}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/问题2_真实销量与预测销量对比图_最终保守版.png}
+\caption{真实销量与预测销量对比图}
+\label{fig:q2_pred}
+\end{subfigure}
+\caption{问题二模型估计结果可视化}
+\label{fig:q2_model_visual}
+\end{figure}
+
+为检验多重共线性对参数估计的影响，进一步计算 VIF，并采用岭回归进行稳健性修正\cite{obrien2007,hoerl1970}。岭回归最优正则化参数为 $\alpha=0.001$，其与 OLS 的系数对比如表 \ref{tab:q2_ridge} 所示。
+
+\begin{table}[!htbp]
+\centering
+\caption{OLS 与岭回归系数对比}
+\label{tab:q2_ridge}
+\renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{gray!12}{white}
+\begin{tabular}{cccc}
+\hline
+\rowcolor{headerblue}
+变量 & OLS回归系数 & 岭回归系数 & 系数符号一致性 \\
+\hline
+本机价格 & -0.6096 & -0.4330 & 一致 \\
+竞品价格 & 0.3355 & 0.2506 & 一致 \\
+产品得分 & 3.8340 & 3.5223 & 一致 \\
+市场容量 & 2.1706 & 2.3357 & 一致 \\
+\hline
+\end{tabular}
+\end{table}
+
+在情景模拟中，以样本均值所对应的市场状态作为基准情景：基准定价为 $4355.67$ 元，竞品平均定价为 $4372.33$ 元，基准产品综合得分为 $86.53$，基准市场容量为 $114.37$，基准单位成本为 $3266.75$ 元。在该状态下，模型预测销量为 $15.1329$ 万台，总利润为 $16478.5210$ 万元。
+
+在此基础上，对“降价 $5\%$”与“基础版+Pro版双版本”两类策略进行仿真，结果如表 \ref{tab:q2_strategy_compare} 所示。
+
+\begin{table}[!htbp]
+\centering
+\caption{不同定价策略下销量与利润对比}
+\label{tab:q2_strategy_compare}
+\renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{gray!12}{white}
+\begin{tabular}{ccccc}
+\hline
+\rowcolor{headerblue}
+方案 & 总销量（万台） & 总利润（万元） & 销量变动率（\%） & 利润变动率（\%） \\
+\hline
+原单版本基准 & 15.1329 & 16478.5210 & 0.00 & 0.00 \\
+降价5\%方案  & 15.6136 & 13601.5163 & 3.18 & -17.46 \\
+双版本策略   & 17.3651 & 18468.7689 & 14.75 & 12.08 \\
+\hline
+\end{tabular}
+\end{table}
+
+图 \ref{fig:q2_compare} 展示了不同策略下销量与利润的对比结果。
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/问题2_不同策略下总销量对比_最终保守版.png}
+\caption{不同策略下总销量}
+\label{fig:q2_sales_compare}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/问题2_不同策略下总利润对比_最终保守版.png}
+\caption{不同策略下总利润}
+\label{fig:q2_profit_compare}
+\end{subfigure}
+\caption{不同定价策略下销量与利润对比}
+\label{fig:q2_compare}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{结果分析}
+
+回归结果表明，本机价格对销量呈负向影响，竞品价格呈正向影响，而产品综合评分与市场容量具有显著正向作用，说明销量由价格、产品力与市场环境共同决定。结合图~\ref{fig:q2_coef} 和图~\ref{fig:q2_pred} 可知，产品综合评分和市场容量的影响强于价格变量，且模型拟合效果较好。
+
+策略比较表明，降价 $5\%$ 虽可使销量提高 $3.18\%$，但会导致利润下降 $17.46\%$；双版本策略则使销量和利润分别提高 $14.75\%$ 和 $12.08\%$。由此可见，双版本分层策略优于单一降价策略。进一步结合图~\ref{fig:q2_sensitivity} 可知，当前考察区间内利润最优价格约为 $5835$ 元，
+但该点位于搜索边界，因此应表述为“区间内最优价格”。从市场策略层面看，企业更应通过差异化产品分层而非单纯价格竞争来提升市场覆盖与利润表现。
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.58\textwidth]{figures/问题2_价格利润敏感性分析曲线_最终保守版.png}
+\caption{价格--利润敏感性分析曲线}
+\label{fig:q2_sensitivity}
+\end{figure}
+
+主要结论归纳如表 \ref{tab:q2_summary} 所示。
+
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{6pt}
+\rowcolors{2}{gray!12}{white}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{6.8cm} >{\raggedright\arraybackslash}p{6.2cm}}
+\caption{问题二结果分析汇总}\label{tab:q2_summary}\\
+\hline
+\rowcolor{headerblue}
+分析角度 & 主要发现 & 管理含义 \\
+\hline
+\endfirsthead
+
+\hline
+\rowcolor{headerblue}
+分析角度 & 主要发现 & 管理含义 \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+价格敏感度 & 本机价格系数为 $-0.6096$，表明价格对销量呈负向影响趋势，但 $p=0.3239$，未达到显著水平。 & 降价可刺激销量，但效果有限，不宜将“低价”作为唯一策略。 \\
+
+竞争效应 & 竞品价格系数为 $0.3355$，说明竞品涨价会在一定程度上带动本产品销量，但当前样本下该效应未显著。 & 市场中存在替代关系，但影响强度受样本规模和市场情景限制。 \\
+
+产品力作用 & 产品得分系数为 $3.8340$，且显著为正，是影响销量的重要因素。 & 提升产品综合体验比单纯降价更有利于扩大需求。 \\
+
+市场环境作用 & 市场容量系数为 $2.1706$，且显著为正，说明外部市场空间对销量影响明显。 & 定价决策需结合市场规模判断，不能脱离市场环境单独讨论。 \\
+
+稳健性检验 & 岭回归与 OLS 系数符号完全一致。 & 模型对变量作用方向的判断较稳定。 \\
+
+策略比较 & 降价 $5\%$ 使销量增加 $3.18\%$，但利润下降 $17.46\%$；双版本策略使销量增加 $14.75\%$、利润增加 $12.08\%$。 & 从市场策略层面看，在当前参数设定下，双版本分层策略优于单一降价策略。 \\
+
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+\section{问题三模型建立与求解}
+
+\subsection{问题分析}
+
+问题三要求综合用户反馈、市场响应、生产成本及销售利润，建立手机设计参数化模型，并求解最优设计参数组合与对应定价策略。与前两问分别侧重“用户评价影响识别”和“定价—销量关系刻画”不同，本问更强调将产品设计、用户感知、市场需求与企业利润统一纳入同一框架中进行联合决策，因此本质上属于多变量耦合条件下的利润最优化问题。
+
+从变量关系看，关键设计参数的变化会首先影响用户对续航、摄像、性能、屏幕等维度的满意度，进而影响总体评分；总体评分又需要进一步映射为市场中的产品综合得分，并通过问题二建立的需求模型影响销量；与此同时，设计参数提升还会带来单位生产成本的增加。因此，问题三并非简单的“高配置即高利润”问题，而是在“用户体验提升—销量变化—成本上升—定价调整”之间寻求最优平衡的问题。
+
+结合题目要求与智能手机产品的一般特征，电池容量、主摄像素、处理器性能指数和屏幕刷新率等参数均可作为设计变量。由于这些参数既影响消费者感知价值，也影响制造成本，故需要分别建立“设计参数—满意度（或评分）”映射关系与“设计参数—成本”映射关系，再与问题二中的销量模型相衔接，构成完整的“设计参数—用户评分—产品得分—市场销量—企业利润”闭环分析链条。
+
+此外，题目允许基于行业常识或公开资料对函数关系作合理假设，这说明本问的关键不在于获得唯一精确的真实函数，而在于在合理假设基础上构建具有解释性、可计算性与可优化性的数学模型。因此，在建模过程中应优先考虑函数形式的单调性、边际收益递减特征及成本递增特征，使模型既符合实际产品规律，又便于后续求解。
+
+综上，问题三的核心任务是：在保证产品体验不下降的前提下，综合考虑配置升级带来的评分提升、销量变化、成本增加与定价调整，建立利润最大化优化模型，求解当前约束条件下的最优设计参数组合及对应定价方案。
+
+
+\subsection{模型建立}
+
+问题三要求综合用户反馈、市场响应、生产成本及销售利润，建立手机设计参数化模型，并求解最优设计参数组合与对应定价。其本质是将“产品设计变量--用户评价--市场销量--利润目标”连接为统一闭环，从而实现利润最大化决策。
+
+结合题目所给设计示例及智能手机产品的一般结构，本文选取电池容量、主摄像素、处理器性能指数和屏幕刷新率4个关键参数作为设计变量，分别记为
+\[
+x_i\ (i=1,2,3,4),
+\]
+其中，$x_1$、$x_2$、$x_3$、$x_4$分别表示电池容量、主摄像素、处理器性能指数和屏幕刷新率。
+
+首先，建立设计参数到各维度满意度的映射关系。设外观、屏幕、摄像、续航、性能和发热控制6个维度满意度分别记为
+\[
+y_i\ (i=1,2,\dots,6).
+\]
+考虑到硬件参数提升对用户体验的改善通常具有边际递减特征，本文采用饱和型单调函数刻画设计参数与维度满意度之间的关系，并以当前产品基准点进行校准，使基准硬件配置对应附件1中各维度满意度均值。于是有
+\begin{equation}
+y_i=f_i(x_1,x_2,x_3,x_4),\qquad i=1,2,\dots,6.
+\label{eq:q3_dim_map}
+\end{equation}
+
+其次，根据问题一建立的总体评分回归模型，将各维度满意度映射为用户总体评分：
+\begin{equation}
+R=\alpha_0+\sum_{i=1}^{6}\alpha_i y_i,
+\label{eq:q3_rating}
+\end{equation}
+其中，$\alpha_i\ (i=0,1,\dots,6)$为问题一回归模型系数。由此可实现“设计参数 $\rightarrow$ 维度满意度 $\rightarrow$ 总体评分”的转换。
+
+再次，为与问题二中的销量模型衔接，建立总体评分与产品综合得分之间的线性校准关系：
+\begin{equation}
+S=S_0+k(R-R_0),
+\label{eq:q3_score}
+\end{equation}
+其中，$R_0$为当前产品基准总体评分，$S_0$为当前产品基准综合得分，$k$为评分映射系数。通过式 \eqref{eq:q3_score}，可将问题一中的总体评分自然转换为问题二中的产品综合评分变量。
+
+同时，建立设计变量与单位成本之间的函数关系。设基准单位成本为$C_0$，则单位成本可表示为
+\begin{equation}
+C=C_0+g_1(x_1)+g_2(x_2)+g_3(x_3)+g_4(x_4),
+\label{eq:q3_cost}
+\end{equation}
+其中，$g_i(\cdot)\ (i=1,2,3,4)$分别表示电池容量、主摄像素、处理器性能和刷新率变化带来的增量成本。
+
+最后，结合问题二的销量模型，构建利润最大化目标函数：
+\begin{equation}
+\max \Pi=(P-C)\cdot Q,
+\label{eq:q3_profit}
+\end{equation}
+其中，$P$为产品定价，$Q$为销量，且
+\begin{equation}
+Q=Q(P,P_c,S,M),
+\label{eq:q3_sales}
+\end{equation}
+即销量由价格、竞品价格、产品综合得分和市场容量共同决定，而综合得分$S$又由设计变量间接决定。至此，问题三被转化为设计变量与定价的联合优化问题。
+
+
+\subsection{模型求解}
+
+首先，基于附件1建立总体评分回归子模型，得到六个维度对总体评分的影响系数；再基于附件2建立中心化对数销量回归子模型，将本机价格、竞品价格、产品综合得分和市场容量与销量联系起来，从而形成“设计参数--维度满意度--总体评分--产品得分--销量--利润”的完整求解链路。
+
+在模型校准过程中，将当前产品基准参数设定为：5000mAh电池、50MP主摄、处理器性能指数85、120Hz刷新率；基准市场状态为：定价4355.67元、竞品均价4372.33元、市场容量114.37。通过参数校准，使当前基准方案在问题三中的预测结果与问题二基准情景保持一致，即
+\[
+R_0=3.7100,\quad S_0=86.5333,\quad Q_0=15.1329\ \text{万台},\quad \Pi_0=16478.5210\ \text{万元}.
+\]
+这保证了问题三优化结果与前两问分析基础的一致性。
+
+随后，本文采用离散枚举法对设计变量与定价进行联合搜索。设计变量取值范围分别设为
+\[
+x_1\in\{4500,4800,5000,5200,5500,5800\},
+\]
+\[
+x_2\in\{50,64,80,100\},
+\]
+\[
+x_3\in\{85,88,92,96\},
+\]
+\[
+x_4\in\{120,144\},
+\]
+价格搜索区间设为
+\[
+P\in[3499,6200].
+\]
+
+在搜索过程中，施加如下约束：定价必须高于单位成本并保留最低毛利；处理器性能指数不得低于基准产品；主摄像素与刷新率不得低于原产品；优化方案总体评分不得低于原产品。上述约束可避免出现“降配换利润”而不符合产品优化语境的方案。
+
+在所有可行解中，取总利润最大的方案作为最优解。最终枚举搜索共考察5376个参数组合，并得到当前约束条件和搜索区间内的最优方案。原产品基准方案与优化后最优方案的利润对比如图\ref{fig:q3_profit_compare}所示。
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,height=5.2cm]{figures/问题3_基准方案与最优方案利润对比图.png}
+        \caption{原产品基准方案与优化方案利润对比}
+        \label{fig:q3_profit_compare}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,height=5.2cm]{figures/问题3_定价与利润关系散点图.png}
+        \caption{定价与利润关系散点图}
+        \label{fig:q3_price_profit}
+    \end{minipage}
+\end{figure}
+\FloatBarrier
+
+由图\ref{fig:q3_profit_compare}与图\ref{fig:q3_price_profit}可知，优化方案相较原产品基准方案实现了显著的利润提升；
+同时，在当前参数设定与约束条件下，总利润整体随定价提高而上升，且当前最优定价点位于搜索区间上边界。
+
+
+\subsection{结果分析}
+
+模型求解表明，在当前约束条件与搜索区间内，利润最大化对应的最优方案为：5500\,mAh电池、50\,MP主摄、处理器性能指数85、120\,Hz刷新率，对应最优定价为6199元。由于该价格位于搜索区间上界，故本文将其表述为当前搜索区间内最优价格；若进一步扩大搜索范围，最优价格仍可能调整。
+
+本文在给定可行参数集合内采用离散枚举搜索，共比较有限组候选方案，以保证求解过程可复现且结果可比。 同时对价格搜索边界与步长进行了邻域检验，结果表明最优配置组合基本稳定，说明核心结论不依赖单一搜索设定。
+
+与原产品基准方案相比，优化后单位成本由3266.75元增至3356.75元，增幅为2.76\%；总体评分由3.7100提升至3.8779，增幅为4.53\%；产品综合得分由86.5333提升至87.3479，增幅为0.94\%；总利润由16478.5210万元提升至35955.0372万元，增幅达118.19\%；销量则由15.1329万台降至12.6502万台，下降16.41\%。这说明在利润最大化目标下，模型更倾向于通过适度提价与关键配置优化提升单位利润，而非单纯追求销量增长。
+
+从参数结构看，最优方案并非全面提升全部硬件，而是优先保留主摄、处理器与刷新率等既有配置，仅将电池容量由5000\,mAh提升至5500\,mAh。其原因在于，电池容量提升能够更有效改善续航体验并带动总体评分上升，而继续提高其他参数的边际收益不足以覆盖新增成本，因而不是当前条件下的最优选择。
+
+电池容量敏感性分析进一步表明，利润随电池容量增加呈先升后降趋势，并在5500\,mAh附近达到峰值；继续提升至5800\,mAh时，尽管评分与销量仍略有改善，但成本上升更快，导致总利润反而下降，说明电池容量存在明显的边际收益递减效应。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/问题3_电池容量敏感性分析图.png}
+    \caption{电池容量敏感性分析}
+    \label{fig:q3_battery_sensitivity}
+\end{figure}
+\FloatBarrier
+
+此外，对利润最高前10个方案的比较表明，各方案总利润集中在35506.92万元至35955.04万元之间，差异较小。图\ref{fig:q3_top10_plan}与图\ref{fig:q3_top10_gap}分别给出了前10个高利润方案的参数组合及其相对最优方案的利润差额。结果显示，最优解附近存在一组性能接近的高利润方案，且其电池容量主要集中在5000--5500\,mAh区间，说明问题三的最优结果并非偶然孤立解，而具有一定稳定性。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/问题3_利润最高前10方案_参数组合横向图.png}
+        \caption{利润最高前10方案参数组合}
+        \label{fig:q3_top10_plan}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/问题3_前10方案相对最优利润差额图.png}
+        \caption{前10方案相对最优利润差额}
+        \label{fig:q3_top10_gap}
+    \end{subfigure}
+    \caption{最优解附近高利润方案对比}
+    \label{fig:q3_top10_group}
+\end{figure}
+\FloatBarrier
+
+综合来看，问题三表明：利润最大化并不要求同步提升全部硬件参数，而应优先优化用户感知收益高、成本收益比更优的关键配置，并结合合理定价实现更高经营回报。换言之，关键配置优化优于全面堆料，产品设计优化的核心在于在用户体验、销量、成本与定价之间实现平衡。
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{模型的优点}
+
+\begin{itemize}
+    \item {\heiti 优点1：构建了由用户评价到利润优化的闭环决策框架。} 本文围绕“设计维度识别—市场响应分析—参数定价联合优化”的主线展开建模，三个问题层层递进，实现了从消费者感知、市场需求到企业利润目标的统一刻画，整体结构完整、逻辑链条清晰。
+
+    \item {\heiti 优点2：多模型交叉验证增强了结论的稳健性与可信度。} 问题一综合采用多元线性回归、标准化回归、岭回归与随机森林识别关键维度，问题二进一步结合稳健标准误、VIF诊断与岭回归检验需求估计结果，从而有效降低了单一模型设定带来的偏差。
+
+    \item {\heiti 优点3：实现了机理分析、策略仿真与优化求解的联动。} 本文不仅刻画了价格、产品力与销量之间的数量关系，还比较了降价策略与双版本分层策略的效果，并进一步给出了利润最大化下的设计参数组合与定价方案，体现出较强的决策支持价值。
+\end{itemize}
+
+\subsection{模型的缺点}
+
+\begin{itemize}
+    \item {\heiti 缺点1：问题三中的部分映射关系仍依赖合理假设。} 设计参数与满意度、成本之间的函数关系采用近似刻画，虽保证了模型可计算性，但对复杂非线性关系的反映仍可进一步完善。
+
+    \item {\heiti 缺点2：问题二的样本规模相对有限。} 有效样本数量较少，可能在一定程度上影响价格弹性、替代效应及参数显著性估计的稳定性，从而对策略仿真结果带来一定扰动。
+
+    \item {\heiti 缺点3：最优定价结果受搜索范围设定影响。} 当前最优价格位于搜索区间边界附近，因此本文所得结果更适宜表述为“当前搜索范围内的最优解”，其全局最优性仍有待在更大范围内进一步检验。
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% 参考文献
+\section*{参考文献}
+
+\begin{thebibliography}{99}
+\bibitem{montgomery2012}
+Montgomery D C, Peck E A, Vining G G. Introduction to Linear Regression Analysis[M]. Hoboken, NJ: Wiley, 2012.
+
+\bibitem{spearman1904}
+Spearman C. The proof and measurement of association between two things[J]. The American Journal of Psychology, 1904, 15(1): 72-101.
+
+\bibitem{obrien2007}
+O'Brien R M. A Caution Regarding Rules of Thumb for Variance Inflation Factors[J]. Quality \& Quantity, 2007, 41(5): 673-690.
+
+\bibitem{hoerl1970}
+Hoerl A E, Kennard R W. Ridge regression: Biased estimation for nonorthogonal problems[J]. Technometrics, 1970, 12(1): 55-67.
+
+\bibitem{lihang2019}
+李航. 统计学习方法（第2版）[M]. 北京: 清华大学出版社, 2019.
+
+\bibitem{wooldridge2020}
+Wooldridge J M. Introductory Econometrics: A Modern Approach[M]. 7th ed. Boston: Cengage, 2020.
+
+\bibitem{mackinnon1985}
+MacKinnon J G, White H. Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties[J]. Journal of Econometrics, 1985, 29(3): 305-325.
+
+\bibitem{hastie2009}
+Hastie T, Tibshirani R, Friedman J. The Elements of Statistical Learning: Data Mining, Inference, and Prediction[M]. 2nd ed. New York: Springer, 2009.
+
+\bibitem{varian2014}
+Varian H R. Intermediate Microeconomics: A Modern Approach[M]. 9th ed. New York: W. W. Norton \& Company, 2014.
+
+\bibitem{lancaster1966}
+Lancaster K J. A new approach to consumer theory[J]. Journal of Political Economy, 1966, 74(2): 132-157.
+
+\bibitem{papadimitriou1998}
+Papadimitriou C H, Steiglitz K. Combinatorial Optimization: Algorithms and Complexity[M]. Mineola, NY: Dover Publications, 1998.
+
+
+\bibitem{breiman2001}
+Breiman L. Random forests[J]. Machine Learning, 2001, 45(1): 5-32.
+\end{thebibliography}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 附录
+\begin{appendices}
+\section{文件列表}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{LL}
+\toprule
+文件名   & 功能描述 \\
+\midrule
+Data Profiling and Feature Analysis.py & 数据处理和特征分析 \\
+Q1 Rating Model.py & 问题一程序代码 \\
+Q2 Pricing Model.py & 问题二程序代码 \\
+Q3 Design Optimization.py & 问题三程序代码 \\
+
+\bottomrule
+\end{tabularx}
+\caption{文件列表}
+\label{tab:文件列表}
+\end{table}
+
+\section{代码}
+
+\noindent\texttt{数据处理代码：}
+
+\lstinputlisting[language=python]{code/Data Profiling and Feature Analysis.py}
+
+\noindent\texttt{问题一程序代码：}
+
+\lstinputlisting[language=python]{code/Q1 Rating Model.py}
+
+\noindent\texttt{问题二程序代码：}
+
+\lstinputlisting[language=python]{code/Q2 Pricing Model.py}
+
+\noindent\texttt{问题三程序代码：}
+
+\lstinputlisting[language=python]{code/Q3 Design Optimization.py}
+
+
+\end{appendices}
+\end{document}
